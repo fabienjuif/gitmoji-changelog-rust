@@ -4,10 +4,13 @@ use semver;
 use git2::string_array::StringArray;
 use regex::Regex;
 
+use crate::commit::Commit;
+
 #[derive(Eq, PartialEq, Debug)]
 pub struct Version {
   pub name: String, // TODO: &str?
   pub semver: Option<semver::Version>,
+  pub commits: Vec<Commit>,
 }
 
 impl Ord for Version {
@@ -35,6 +38,7 @@ impl Version {
         let mut version = Version {
           name: name.to_string(),
           semver: None,
+          commits: vec![],
         };
 
         if let Some(captures) = re.captures(name) {
