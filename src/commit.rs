@@ -18,6 +18,7 @@ impl Commit {
             Some(captures) => {
                 let emoji_code = captures.get(1).unwrap().as_str();
                 let summary = captures.get(2).unwrap().as_str().trim();
+                // TODO: use a HashMap instead of doing this cardinal product
                 let group_code = match groups.iter().find(|group| group.codes.iter().any(|&code| code == emoji_code)) {
                     None => String::from("Others"),
                     Some(group) => group.name.to_string(),
