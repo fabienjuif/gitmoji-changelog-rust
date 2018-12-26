@@ -20,7 +20,7 @@ impl Changelog {
 
     // TODO: range
     // revwalk.push_head();
-    revwalk.push_range(range);
+    revwalk.push_range(range).unwrap();
 
     let groups = Group::all();
 

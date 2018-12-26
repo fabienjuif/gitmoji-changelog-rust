@@ -4,8 +4,6 @@ mod group;
 mod commit;
 mod changelog;
 
-use crate::group::Group;
-use crate::commit::Commit;
 use crate::changelog::Changelog;
 
 fn main() {
