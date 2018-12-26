@@ -4,6 +4,14 @@ Rust version of [gitmoji-changelog](https://github.com/frinyvonnick/gitmoji-chan
 ## Why
 I was sad about the space it takes in a Docker container with the NodeJS version and I am learning Rust: so I was curious and it helps me have a little Rust CLI project to play with.
 
+## Try it
+With Docker 🐳!
+
+You should have tag in the repository you want to test.
+```sh
+docker run --rm -v ${PWD}:/repo fabienjuif/gitmoji-changelog
+```
+
 ## Roadmap
 For now, this project is just a test I do.
 But if I (or you) want to push this further:
