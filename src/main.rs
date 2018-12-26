@@ -16,10 +16,11 @@ use crate::changelog::Changelog;
 
 const TEMPLATE: &str = r"
 # Changelog
-## Version 1.0.0
-
-{{#each commits as |commit|}}
-    - {{commit.emoji_code}} - {{commit.summary}}
+{{#each versions as |version|}}
+## Version {{version.name}}
+  {{#each version.commits as |commit|~}}
+  - {{commit.emoji_code}} - {{commit.summary}}
+  {{/each~}}
 {{/each}}
 ";
 

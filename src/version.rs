@@ -2,15 +2,29 @@ use std::cmp::Ordering;
 
 use semver;
 use git2::string_array::StringArray;
+use git2::Repository;
 use regex::Regex;
+use serde::ser::{Serialize, Serializer, SerializeStruct};
 
 use crate::commit::Commit;
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Version {
   pub name: String, // TODO: &str?
-  pub semver: Option<semver::Version>,
+  pub semver: Option<semver::Version>, // TODO: don't know if this is useful, except for sorting, I excluded it from JSON serialization
   pub commits: Vec<Commit>,
+}
+
+impl Serialize for Version {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("Version", 2)?;
+        state.serialize_field("name", &self.name)?;
+        state.serialize_field("commits", &self.commits)?;
+        state.end()
+    }
 }
 
 impl Ord for Version {
@@ -30,16 +44,21 @@ impl PartialOrd for Version {
 }
 
 impl Version {
-  pub fn from_tag_names(names: &StringArray) -> Vec<Version> {
+  pub fn new(name: &str) -> Version {
+    Version {
+      name: name.to_string(),
+      semver: None,
+      commits: vec![],
+    }
+  }
+
+  pub fn from_repository(repository: &Repository) -> Vec<Version> {
     let re = Regex::new(r"v?(.*)").unwrap(); // TODO: const ?
-    let mut tag_names = names.iter()
+
+    let mut versions = repository.tag_names(None).unwrap().iter()
       .filter_map(|name| name)
       .map(|name| {
-        let mut version = Version {
-          name: name.to_string(),
-          semver: None,
-          commits: vec![],
-        };
+        let mut version = Version::new(name);
 
         if let Some(captures) = re.captures(name) {
           if let Some(capture) = captures.get(1) {
@@ -51,8 +70,19 @@ impl Version {
       })
       .collect::<Vec<_>>();
 
-    tag_names.sort();
+    versions.sort();
 
-    tag_names
+    let mut revwalk = repository.revwalk().unwrap();
+    let mut previous_version_name = String::from("");
+    versions.iter_mut().for_each(|mut version| {
+      revwalk.push_range(&format!("{}..{}", previous_version_name, version.name)).unwrap();
+
+      version.commits = Commit::from_revwalk(&repository, &mut revwalk);
+
+      previous_version_name = version.name.to_string();
+    });
+    versions.reverse();
+
+    versions
   }
 }
