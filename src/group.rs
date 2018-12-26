@@ -33,6 +33,7 @@ impl<'a> Group<'a> {
                 "arrow_up",
                 "pushpin",
                 "recycle",
+                "hammer",
                 "wrench",
                 "rewind",
                 "alien",

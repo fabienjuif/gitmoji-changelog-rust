@@ -8,6 +8,7 @@ lazy_static! {
   static ref EMOJIES: HashMap<&'static str, &'static str> = {
     let mut m = HashMap::new();
     // You can use gen_code.js to generate this
+    m.insert(":hammer:", "🔨");
     m.insert(":art:", "🎨");
     m.insert(":zap:", "⚡️");
     m.insert(":fire:", "🔥");
