@@ -1,0 +1,9 @@
+[package]
+name = "gitmoji-changelog-rust"
+version = "0.1.0"
+authors = ["Fabien JUIF <fabien.juif@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+git2 = "0.8.0"
+regex = "1.1.0"
