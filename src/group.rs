@@ -3,106 +3,81 @@ use std::collections::HashMap;
 use crate::commit::Commit;
 
 lazy_static! {
-  static ref GROUPS: Vec<Group> = {
-    let mut groups = vec![];
+    static ref GROUPS: Vec<Group> = {
+        let mut groups = vec![];
 
-    groups.push(Group::new(
-        "Added",
-        vec![
-            "sparkles",
-            "tada",
-            "sparkles",
-            "tada",
-            "white_check_mark",
-            "construction_worker",
-            "chart_with_upwards_trend",
-            "heavy_plus_sign",
-        ],
-    ));
+        groups.push(Group::new(
+            "Added",
+            vec![
+                "sparkles",
+                "tada",
+                "sparkles",
+                "tada",
+                "white_check_mark",
+                "construction_worker",
+                "chart_with_upwards_trend",
+                "heavy_plus_sign",
+            ],
+        ));
 
-    groups.push(Group::new(
-        "Changed",
-        vec![
-            "art",
-            "zap",
-            "lipstick",
-            "rotating_light",
-            "arrow_down",
-            "arrow_up",
-            "pushpin",
-            "recycle",
-            "hammer",
-            "wrench",
-            "rewind",
-            "alien",
-            "truck",
-            "bento",
-            "wheelchair",
-            "speech_balloon",
-            "card_file_box",
-            "children_crossing",
-            "building_construction",
-            "iphone",
-        ],
-    ));
+        groups.push(Group::new(
+            "Changed",
+            vec![
+                "art",
+                "zap",
+                "lipstick",
+                "rotating_light",
+                "arrow_down",
+                "arrow_up",
+                "pushpin",
+                "recycle",
+                "hammer",
+                "wrench",
+                "rewind",
+                "alien",
+                "truck",
+                "bento",
+                "wheelchair",
+                "speech_balloon",
+                "card_file_box",
+                "children_crossing",
+                "building_construction",
+                "iphone",
+            ],
+        ));
 
-    groups.push(Group::new(
-        "Breaking changes",
-        vec![
-            "boom",
-        ],
-    ));
+        groups.push(Group::new("Breaking changes", vec!["boom"]));
 
-    groups.push(Group::new(
-        "Deprecated",
-        vec![],
-    ));
+        groups.push(Group::new("Deprecated", vec![]));
 
-    groups.push(Group::new(
-        "Removed",
-        vec![
-            "fire",
-            "heavy_minus_sign",
-            "mute",
-        ],
-    ));
+        groups.push(Group::new(
+            "Removed",
+            vec!["fire", "heavy_minus_sign", "mute"],
+        ));
 
-    groups.push(Group::new(
-        "Fixed",
-        vec![
-            "bug",
-            "ambulance",
-            "apple",
-            "penguin",
-            "checkered_flag",
-            "robot",
-            "green_apple",
-            "green_heart",
-            "pencil2",
-        ],
-    ));
+        groups.push(Group::new(
+            "Fixed",
+            vec![
+                "bug",
+                "ambulance",
+                "apple",
+                "penguin",
+                "checkered_flag",
+                "robot",
+                "green_apple",
+                "green_heart",
+                "pencil2",
+            ],
+        ));
 
-    groups.push(Group::new(
-        "Security",
-        vec![
-            "lock",
-        ],
-    ));
+        groups.push(Group::new("Security", vec!["lock"]));
 
-    groups.push(Group::new(
-        "Useless",
-        vec![
-            "bookmark",
-        ],
-    ));
+        groups.push(Group::new("Useless", vec!["bookmark"]));
 
-    groups.push(Group::new(
-        "Miscellaneous",
-        vec![],
-    ));
+        groups.push(Group::new("Miscellaneous", vec![]));
 
-    groups
-  };
+        groups
+    };
 }
 
 #[derive(Debug, Serialize, Eq)]
@@ -118,10 +93,9 @@ impl PartialEq for Group {
     }
 }
 
-
 impl Group {
     pub fn new(name: &'static str, codes: Vec<&'static str>) -> Group {
-        Group{
+        Group {
             name,
             codes,
             commits: vec![],
@@ -133,7 +107,10 @@ impl Group {
 
         for commit in commits {
             // TODO: use a HashMap instead of doing this cardinal product
-            let group_name = match GROUPS.iter().find(|group| group.codes.iter().any(|&code| code == commit.emoji_code)) {
+            let group_name = match GROUPS
+                .iter()
+                .find(|group| group.codes.iter().any(|&code| code == commit.emoji_code))
+            {
                 None => "Miscellaneous",
                 Some(group) => group.name,
             };

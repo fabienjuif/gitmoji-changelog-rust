@@ -1,18 +1,18 @@
 use std::cmp::Ordering;
 
-use semver;
 use git2::Repository;
 use regex::Regex;
-use serde::ser::{Serialize, Serializer, SerializeStruct};
+use semver;
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 
-use crate::group::Group;
 use crate::commit::Commit;
+use crate::group::Group;
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Version {
-  pub name: String, // TODO: &str?
-  pub semver: Option<semver::Version>, // TODO: don't know if this is useful, except for sorting, I excluded it from JSON serialization
-  pub groups: Vec<Group>,
+    pub name: String,                    // TODO: &str?
+    pub semver: Option<semver::Version>, // TODO: don't know if this is useful, except for sorting, I excluded it from JSON serialization
+    pub groups: Vec<Group>,
 }
 
 impl Serialize for Version {
@@ -29,11 +29,11 @@ impl Serialize for Version {
 
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
-      if self.semver.is_some() && other.semver.is_some() {
-        return self.semver.cmp(&other.semver)
-      }
+        if self.semver.is_some() && other.semver.is_some() {
+            return self.semver.cmp(&other.semver);
+        }
 
-      self.name.cmp(&other.name)
+        self.name.cmp(&other.name)
     }
 }
 
@@ -44,45 +44,50 @@ impl PartialOrd for Version {
 }
 
 impl Version {
-  pub fn new(name: &str) -> Version {
-    Version {
-      name: name.to_string(),
-      semver: None,
-      groups: vec![],
-    }
-  }
-
-  pub fn from_repository(repository: &Repository) -> Vec<Version> {
-    let re = Regex::new(r"v?(.*)").unwrap(); // TODO: const ?
-
-    let mut versions = repository.tag_names(None).unwrap().iter()
-      .filter_map(|name| name)
-      .map(|name| {
-        let mut version = Version::new(name);
-
-        if let Some(captures) = re.captures(name) {
-          if let Some(capture) = captures.get(1) {
-            version.semver = semver::Version::parse(capture.as_str()).ok()
-          }
+    pub fn new(name: &str) -> Version {
+        Version {
+            name: name.to_string(),
+            semver: None,
+            groups: vec![],
         }
+    }
 
-        version
-      })
-      .collect::<Vec<_>>();
+    pub fn from_repository(repository: &Repository) -> Vec<Version> {
+        let re = Regex::new(r"v?(.*)").unwrap(); // TODO: const ?
 
-    versions.sort();
+        let mut versions = repository
+            .tag_names(None)
+            .unwrap()
+            .iter()
+            .filter_map(|name| name)
+            .map(|name| {
+                let mut version = Version::new(name);
 
-    let mut revwalk = repository.revwalk().unwrap();
-    let mut previous_version_name = String::from("");
-    versions.iter_mut().for_each(|mut version| {
-      revwalk.push_range(&format!("{}..{}", previous_version_name, version.name)).unwrap();
+                if let Some(captures) = re.captures(name) {
+                    if let Some(capture) = captures.get(1) {
+                        version.semver = semver::Version::parse(capture.as_str()).ok()
+                    }
+                }
 
-      version.groups = Group::from_commits(Commit::from_revwalk(&repository, &mut revwalk));
+                version
+            })
+            .collect::<Vec<_>>();
 
-      previous_version_name = version.name.to_string();
-    });
-    versions.reverse();
+        versions.sort();
 
-    versions
-  }
+        let mut revwalk = repository.revwalk().unwrap();
+        let mut previous_version_name = String::from("");
+        versions.iter_mut().for_each(|mut version| {
+            revwalk
+                .push_range(&format!("{}..{}", previous_version_name, version.name))
+                .unwrap();
+
+            version.groups = Group::from_commits(Commit::from_revwalk(&repository, &mut revwalk));
+
+            previous_version_name = version.name.to_string();
+        });
+        versions.reverse();
+
+        versions
+    }
 }

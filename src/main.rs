@@ -10,12 +10,12 @@ use std::io::prelude::*;
 
 use std::env;
 
+use clap::{App, Arg};
 use handlebars::Handlebars;
-use clap::{Arg, App};
 
-mod group;
-mod commit;
 mod changelog;
+mod commit;
+mod group;
 mod version;
 
 use crate::changelog::Changelog;
@@ -38,16 +38,20 @@ fn main() {
     let matches = App::new("gitmoji-changelog")
         .version("1.0.0")
         .author("Fabien JUIF <fabien.juif@gmail.com>")
-        .arg(Arg::with_name("output")
-            .short("o")
-            .long("output")
-            .value_name("FILE")
-            .help("File to update, if not defined write on stdout")
-            .takes_value(true))
-        .arg(Arg::with_name("path")
-            .help("path to the git repository to parse")
-            .value_name("GIT_REPOSITORY_PATH")
-            .required(true))
+        .arg(
+            Arg::with_name("output")
+                .short("o")
+                .long("output")
+                .value_name("FILE")
+                .help("File to update, if not defined write on stdout")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("path")
+                .help("path to the git repository to parse")
+                .value_name("GIT_REPOSITORY_PATH")
+                .required(true),
+        )
         .get_matches();
 
     eprintln!("Git repository path: {}", matches.value_of("path").unwrap());
