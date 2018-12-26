@@ -8,7 +8,9 @@ I was sad about the space it takes in a Docker container with the NodeJS version
 For now, this project is just a test I do.
 But if I (or you) want to push this further:
  - [x] List commits betweens 2 hashes
- - [ ] Create a markdown
+ - [x] Group commits by "code"
+ - [x] Group commits by version
+ - [x] Create a markdown
  - [ ] Create an incremental markdown
  - [ ] Detect which tags to start from
  - [ ] Add author
