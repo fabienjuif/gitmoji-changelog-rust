@@ -1,18 +1,18 @@
 use std::cmp::Ordering;
 
 use semver;
-use git2::string_array::StringArray;
 use git2::Repository;
 use regex::Regex;
 use serde::ser::{Serialize, Serializer, SerializeStruct};
 
+use crate::group::Group;
 use crate::commit::Commit;
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Version {
   pub name: String, // TODO: &str?
   pub semver: Option<semver::Version>, // TODO: don't know if this is useful, except for sorting, I excluded it from JSON serialization
-  pub commits: Vec<Commit>,
+  pub groups: Vec<Group>,
 }
 
 impl Serialize for Version {
@@ -22,7 +22,7 @@ impl Serialize for Version {
     {
         let mut state = serializer.serialize_struct("Version", 2)?;
         state.serialize_field("name", &self.name)?;
-        state.serialize_field("commits", &self.commits)?;
+        state.serialize_field("groups", &self.groups)?;
         state.end()
     }
 }
@@ -48,7 +48,7 @@ impl Version {
     Version {
       name: name.to_string(),
       semver: None,
-      commits: vec![],
+      groups: vec![],
     }
   }
 
@@ -77,7 +77,7 @@ impl Version {
     versions.iter_mut().for_each(|mut version| {
       revwalk.push_range(&format!("{}..{}", previous_version_name, version.name)).unwrap();
 
-      version.commits = Commit::from_revwalk(&repository, &mut revwalk);
+      version.groups = Group::from_commits(Commit::from_revwalk(&repository, &mut revwalk));
 
       previous_version_name = version.name.to_string();
     });

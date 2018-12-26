@@ -11,7 +11,7 @@ use std::io::prelude::*;
 use std::env;
 
 use handlebars::Handlebars;
-use clap::{Arg, App, SubCommand};
+use clap::{Arg, App};
 
 mod group;
 mod commit;
@@ -22,12 +22,16 @@ use crate::changelog::Changelog;
 
 const TEMPLATE: &str = r"
 # Changelog
+
 {{#each versions as |version|}}
 ## Version {{version.name}}
-  {{#each version.commits as |commit|~}}
-  - {{commit.emoji}}  {{commit.summary}}
-  {{/each~}}
-{{/each}}
+{{#each version.groups as |group|}}
+### {{group.name}}
+{{#each group.commits as |commit|~}}
+ - {{commit.emoji}}  {{commit.summary}}
+{{/each~}}
+{{/each~}}
+{{/each~}}
 ";
 
 fn main() {
@@ -54,7 +58,7 @@ fn main() {
     // let changelog = Changelog::from_range(&repository, "06a218d4bba6d3d7bf359bd9eff4013f585fc1fa..HEAD");
     let changelog = Changelog::from_range(&repository, "v1.0.0..HEAD");
 
-    let mut reg = Handlebars::new();
+    let reg = Handlebars::new();
     let result = reg.render_template(TEMPLATE, &json!(changelog)).unwrap();
 
     match matches.value_of("output") {

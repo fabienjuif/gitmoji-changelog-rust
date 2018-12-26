@@ -1,110 +1,159 @@
-#[derive(Debug)]
-pub struct Group<'a> {
-    pub name: &'a str,
-    pub codes: Vec<&'a str>,
+use std::collections::HashMap;
+
+use crate::commit::Commit;
+
+lazy_static! {
+  static ref GROUPS: Vec<Group> = {
+    let mut groups = vec![];
+
+    groups.push(Group::new(
+        "Added",
+        vec![
+            "sparkles",
+            "tada",
+            "sparkles",
+            "tada",
+            "white_check_mark",
+            "construction_worker",
+            "chart_with_upwards_trend",
+            "heavy_plus_sign",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Changed",
+        vec![
+            "art",
+            "zap",
+            "lipstick",
+            "rotating_light",
+            "arrow_down",
+            "arrow_up",
+            "pushpin",
+            "recycle",
+            "hammer",
+            "wrench",
+            "rewind",
+            "alien",
+            "truck",
+            "bento",
+            "wheelchair",
+            "speech_balloon",
+            "card_file_box",
+            "children_crossing",
+            "building_construction",
+            "iphone",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Breaking changes",
+        vec![
+            "boom",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Deprecated",
+        vec![],
+    ));
+
+    groups.push(Group::new(
+        "Removed",
+        vec![
+            "fire",
+            "heavy_minus_sign",
+            "mute",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Fixed",
+        vec![
+            "bug",
+            "ambulance",
+            "apple",
+            "penguin",
+            "checkered_flag",
+            "robot",
+            "green_apple",
+            "green_heart",
+            "pencil2",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Security",
+        vec![
+            "lock",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Useless",
+        vec![
+            "bookmark",
+        ],
+    ));
+
+    groups.push(Group::new(
+        "Miscellaneous",
+        vec![],
+    ));
+
+    groups
+  };
 }
 
-impl<'a> Group<'a> {
-    pub fn all() -> Vec<Group<'a>>{
-        let mut groups = Vec::new();
+#[derive(Debug, Serialize, Eq)]
+pub struct Group {
+    pub name: &'static str,
+    pub codes: Vec<&'static str>, // TODO: remove this from here
+    pub commits: Vec<Commit>,
+}
 
-        groups.push(Group {
-            name: "Added",
-            codes: vec![
-                "sparkles",
-                "tada",
-                "sparkles",
-                "tada",
-                "white_check_mark",
-                "construction_worker",
-                "chart_with_upwards_trend",
-                "heavy_plus_sign",
-            ],
-        });
+impl PartialEq for Group {
+    fn eq(&self, other: &Group) -> bool {
+        self.name == other.name
+    }
+}
 
-        groups.push(Group {
-            name: "Changed",
-            codes: vec![
-                "art",
-                "zap",
-                "lipstick",
-                "rotating_light",
-                "arrow_down",
-                "arrow_up",
-                "pushpin",
-                "recycle",
-                "hammer",
-                "wrench",
-                "rewind",
-                "alien",
-                "truck",
-                "bento",
-                "wheelchair",
-                "speech_balloon",
-                "card_file_box",
-                "children_crossing",
-                "building_construction",
-                "iphone",
-            ],
-        });
 
-        groups.push(Group {
-            name: "Breaking changes",
-            codes: vec![
-                "boom",
-            ],
-        });
+impl Group {
+    pub fn new(name: &'static str, codes: Vec<&'static str>) -> Group {
+        Group{
+            name,
+            codes,
+            commits: vec![],
+        }
+    }
 
-        groups.push(Group {
-            name: "Deprecated",
-            codes: vec![
-            ],
-        });
+    pub fn from_commits(commits: Vec<Commit>) -> Vec<Group> {
+        let mut groups = HashMap::new();
 
-        groups.push(Group {
-            name: "Removed",
-            codes: vec![
-                "fire",
-                "heavy_minus_sign",
-                "mute",
-            ],
-        });
+        for commit in commits {
+            // TODO: use a HashMap instead of doing this cardinal product
+            let group_name = match GROUPS.iter().find(|group| group.codes.iter().any(|&code| code == commit.emoji_code)) {
+                None => "Miscellaneous",
+                Some(group) => group.name,
+            };
 
-        groups.push(Group {
-            name: "Fixed",
-            codes: vec![
-                "bug",
-                "ambulance",
-                "apple",
-                "penguin",
-                "checkered_flag",
-                "robot",
-                "green_apple",
-                "green_heart",
-                "pencil2",
-            ],
-        });
+            groups
+                .entry(group_name)
+                .or_insert(Group::new(group_name, vec![]));
+            groups
+                .entry(group_name)
+                .and_modify(|group| group.commits.push(commit));
+        }
 
-        groups.push(Group {
-            name: "Security",
-            codes: vec![
-                "lock",
-            ],
-        });
+        // Transform the HashMap to a Vec
+        let mut vector = vec![];
+        for (_, group) in groups {
+            if group.name != "Useless" {
+                vector.push(group);
+            }
+        }
 
-        groups.push(Group {
-            name: "Useless",
-            codes: vec![
-                "bookmark",
-            ],
-        });
-
-        groups.push(Group {
-            name: "Miscellaneous",
-            codes: vec![
-            ],
-        });
-
-        groups
+        vector
     }
 }

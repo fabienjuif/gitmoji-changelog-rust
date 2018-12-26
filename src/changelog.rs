@@ -2,8 +2,6 @@ use std::path::{Path};
 
 use git2::Repository;
 
-use crate::group::Group;
-use crate::commit::Commit;
 use crate::version::Version;
 
 #[derive(Debug, Serialize)]
