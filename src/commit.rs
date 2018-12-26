@@ -2,7 +2,7 @@ use regex::Regex;
 
 use crate::group::Group;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Commit {
     pub summary: String, // TODO: try to convert this so str
     pub emoji_code: String,

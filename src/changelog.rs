@@ -7,7 +7,7 @@ use crate::commit::Commit;
 use crate::group::Group;
 use crate::version::Version;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Changelog {
   range: String, // TODO: &str?
   commits: Vec<Commit>,
@@ -20,7 +20,7 @@ impl Changelog {
     let mut revwalk = repository.revwalk().unwrap();
 
     let versions = Version::from_tag_names(&repository.tag_names(None).unwrap());
-    println!("versions: {:?}", versions.iter().find(|version| version.name == "v1.0.0-alpha.0").map(|version| version.clone()));
+    // println!("versions: {:?}", versions.iter().find(|version| version.name == "v1.0.0-alpha.0").map(|version| version.clone()));
 
     // TODO: range
     // revwalk.push_head();
