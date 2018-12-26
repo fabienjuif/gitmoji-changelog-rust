@@ -1,5 +1,5 @@
 # TODO: multistaged
-FROM alpine
+FROM scratch
 
 WORKDIR /repo
 

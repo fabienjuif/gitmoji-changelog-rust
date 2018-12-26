@@ -9,7 +9,7 @@ For now, this project is just a test I do.
 But if I (or you) want to push this further:
  - [ ] List commits betweens 2 hashes
  - [ ] Create a markdown
- - [ ] Create an incremental markdown
+ - [ ] Create an incremental markdown
  - [ ] Detect which tags to start from
  - [ ] Add author
  - [ ] Group similar commits
