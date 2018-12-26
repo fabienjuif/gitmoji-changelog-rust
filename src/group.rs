@@ -19,32 +19,6 @@ impl<'a> Group<'a> {
                 "construction_worker",
                 "chart_with_upwards_trend",
                 "heavy_plus_sign",
-                "loud_so jund",
-            ],
-        });
-
-        groups.push(Group {
-            name: "Added",
-            codes: vec![
-                "art",
-                "zap",
-                "lipstick",
-                "rotating_light",
-                "arrow_down",
-                "arrow_up",
-                "pushpin",
-                "recycle",
-                "wrench",
-                "rewind",
-                "alien",
-                "truck",
-                "bento",
-                "wheelchair",
-                "speech_balloon",
-                "card_file_box",
-                "children_crossing",
-                "building_construction",
-                "iphone",
             ],
         });
 
@@ -128,11 +102,6 @@ impl<'a> Group<'a> {
             name: "Miscellaneous",
             codes: vec![
             ],
-        });
-
-        groups.push(Group {
-            name: "Others",
-            codes: vec![],
         });
 
         groups

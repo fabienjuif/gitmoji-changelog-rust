@@ -2,6 +2,8 @@
 extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
+#[macro_use]
+extern crate lazy_static;
 
 use std::env;
 
@@ -19,7 +21,7 @@ const TEMPLATE: &str = r"
 {{#each versions as |version|}}
 ## Version {{version.name}}
   {{#each version.commits as |commit|~}}
-  - {{commit.emoji_code}} - {{commit.summary}}
+  - {{commit.emoji}}  {{commit.summary}}
   {{/each~}}
 {{/each}}
 ";
