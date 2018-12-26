@@ -1,7 +1,11 @@
 use std::path::{Path};
+
+use regex::Regex;
 use git2::Repository;
+
 use crate::commit::Commit;
 use crate::group::Group;
+use crate::version::Version;
 
 #[derive(Debug)]
 pub struct Changelog {
@@ -15,8 +19,8 @@ impl Changelog {
     let repository = Repository::open(repository).unwrap();
     let mut revwalk = repository.revwalk().unwrap();
 
-    // TODO: move this
-    println!("tag: {:?}", repository.tag_names(None).unwrap().iter().collect::<Vec<_>>());
+    let versions = Version::from_tag_names(&repository.tag_names(None).unwrap());
+    println!("versions: {:?}", versions.iter().find(|version| version.name == "v1.0.0-alpha.0").map(|version| version.clone()));
 
     // TODO: range
     // revwalk.push_head();
