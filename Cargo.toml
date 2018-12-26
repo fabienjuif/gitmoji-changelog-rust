@@ -1,8 +1,13 @@
 [package]
-name = "gitmoji-changelog-rust"
-version = "0.1.0"
+name = "gitmoji-changelog"
+version = "0.1.3"
 authors = ["Fabien JUIF <fabien.juif@gmail.com>"]
 edition = "2018"
+license = "MIT"
+description = "Do you use gitmoji? Then generate your changelog with this app!"
+documentation = "https://docs.rs/crate/gitmoji-changelog"
+repository = "https://github.com/fabienjuif/gitmoji-changelog-rust"
+readme = "README.md"
 
 [dependencies]
 git2 = "0.8.0"
