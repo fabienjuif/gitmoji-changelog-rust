@@ -76,15 +76,19 @@ impl Version {
         versions.sort();
 
         let mut revwalk = repository.revwalk().unwrap();
-        let mut previous_version_name = String::from("");
+        let mut previous_version_name = "";
         versions.iter_mut().for_each(|mut version| {
-            revwalk
-                .push_range(&format!("{}..{}", previous_version_name, version.name))
-                .unwrap();
+            if previous_version_name == "" {
+                revwalk.push_ref(&format!("refs/tags/{}", version.name)).unwrap();
+            } else {
+                revwalk
+                    .push_range(&format!("{}..{}", previous_version_name, version.name))
+                    .unwrap();
+            }
 
             version.groups = Group::from_commits(Commit::from_revwalk(&repository, &mut revwalk));
 
-            previous_version_name = version.name.to_string();
+            previous_version_name = &version.name;
         });
         versions.reverse();
 
