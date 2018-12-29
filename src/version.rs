@@ -73,12 +73,19 @@ impl Version {
             })
             .collect::<Vec<_>>();
 
+        if versions.is_empty() {
+            versions.push(Version::new("HEAD"));
+        }
+
         versions.sort();
 
         let mut revwalk = repository.revwalk().unwrap();
         let mut previous_version_name = "";
+        let versions_len = versions.len();
         versions.iter_mut().for_each(|mut version| {
-            if previous_version_name == "" {
+            if version.name == "HEAD" && versions_len == 1 {
+                revwalk.push_head().unwrap();
+            } else if previous_version_name == "" {
                 revwalk.push_ref(&format!("refs/tags/{}", version.name)).unwrap();
             } else {
                 revwalk
