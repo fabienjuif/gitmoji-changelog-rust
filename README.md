@@ -10,10 +10,13 @@ I was sad about the space it takes in a Docker container with the NodeJS version
 
 ## Try it
 With Docker 🐳!
-
-You should have tag in the repository you want to test.
 ```sh
 docker run --rm -v ${PWD}:/repo fabienjuif/gitmoji-changelog
+```
+
+To see which options you can use:
+```sh
+docker run --rm -v ${PWD}:/repo fabienjuif/gitmoji-changelog --help
 ```
 
 ## Roadmap
