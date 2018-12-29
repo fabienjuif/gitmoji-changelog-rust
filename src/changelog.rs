@@ -10,12 +10,12 @@ pub struct Changelog {
 }
 
 impl Changelog {
-    pub fn open(path: &str) -> Changelog {
+    pub fn open(path: &str, from: Option<&str>) -> Changelog {
         let repository = Path::new(&path);
         let repository = Repository::open(repository).unwrap();
 
         Changelog {
-            versions: Version::from_repository(&repository),
+            versions: Version::from_repository(&repository, from),
         }
     }
 }

@@ -23,8 +23,8 @@ But if I (or you) want to push this further:
  - [x] Group commits by "code"
  - [x] Group commits by version
  - [x] Create a markdown
- - [ ] Create an incremental markdown
- - [ ] Detect which tags to start from
+ - [x] Create an incremental markdown
+ - [x] Detect which tags to start from
  - [x] Add author
  - [ ] Group similar commits
  - [ ] Links to github

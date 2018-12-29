@@ -8,6 +8,10 @@ use serde::ser::{Serialize, SerializeStruct, Serializer};
 use crate::commit::Commit;
 use crate::group::Group;
 
+lazy_static! {
+  static ref RE_REMOVE_V: Regex = Regex::new(r"v?(.*)").unwrap();
+}
+
 #[derive(Eq, PartialEq, Debug)]
 pub struct Version {
     pub name: String,                    // TODO: &str?
@@ -45,31 +49,39 @@ impl PartialOrd for Version {
 
 impl Version {
     pub fn new(name: &str) -> Version {
+        let semver = match RE_REMOVE_V.captures(name) {
+            None => None,
+            Some(captures) =>  match captures.get(1) {
+                None => None,
+                Some(capture) => semver::Version::parse(capture.as_str()).ok(),
+            },
+        };
+
         Version {
             name: name.to_string(),
-            semver: None,
+            semver,
             groups: vec![],
         }
     }
 
-    pub fn from_repository(repository: &Repository) -> Vec<Version> {
-        let re = Regex::new(r"v?(.*)").unwrap(); // TODO: const ?
+    pub fn from_repository(repository: &Repository, from: Option<&str>) -> Vec<Version> {
+        let from_version = from.map(|f| Version::new(f));
 
         let mut versions = repository
             .tag_names(None)
             .unwrap()
             .iter()
             .filter_map(|name| name)
-            .map(|name| {
-                let mut version = Version::new(name);
+            .filter_map(|name| {
+                let version = Version::new(name);
 
-                if let Some(captures) = re.captures(name) {
-                    if let Some(capture) = captures.get(1) {
-                        version.semver = semver::Version::parse(capture.as_str()).ok()
+                if let Some(from_version) = &from_version {
+                    if from_version >= &version {
+                        return None;
                     }
                 }
 
-                version
+                Some(version)
             })
             .collect::<Vec<_>>();
 
@@ -80,10 +92,10 @@ impl Version {
         versions.sort();
 
         let mut revwalk = repository.revwalk().unwrap();
-        let mut previous_version_name = "";
+        let mut previous_version_name = from.unwrap_or("");
         let versions_len = versions.len();
         versions.iter_mut().for_each(|mut version| {
-            if version.name == "HEAD" && versions_len == 1 {
+            if version.name == "HEAD" && versions_len == 1 && from.is_none() {
                 revwalk.push_head().unwrap();
             } else if previous_version_name == "" {
                 revwalk
