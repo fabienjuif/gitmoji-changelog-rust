@@ -27,6 +27,7 @@ But if I (or you) want to push this further:
  - [ ] Detect which tags to start from
  - [x] Add author
  - [ ] Group similar commits
+ - [ ] Links to github
 
 This is a lot of work and I this is surely not worh it!
 
