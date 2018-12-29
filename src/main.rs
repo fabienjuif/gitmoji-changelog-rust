@@ -20,7 +20,7 @@ mod version;
 use crate::changelog::Changelog;
 
 lazy_static! {
-  static ref REG_FROM: Regex = Regex::new("<a name=\"(.*?)\".*").unwrap();
+    static ref REG_FROM: Regex = Regex::new("<a name=\"(.*?)\".*").unwrap();
 }
 
 const HEADER: &str = "# Changelog";
@@ -70,7 +70,7 @@ fn main() {
     eprintln!("Git repository path: {}", repository);
 
     let get_versions = |from| {
-        let changelog = Changelog::open(&repository, from);
+        let changelog = Changelog::from(&repository, from);
 
         let mut reg = Handlebars::new();
         reg.set_strict_mode(true);
@@ -81,7 +81,10 @@ fn main() {
             },
         });
 
-        format!("\n{}\n", reg.render_template(VERSIONS_TEMPLATE, &json).unwrap())
+        format!(
+            "\n{}\n",
+            reg.render_template(VERSIONS_TEMPLATE, &json).unwrap()
+        )
     };
 
     let mut result = String::from("");
@@ -91,7 +94,7 @@ fn main() {
             result.push_str(&HEADER);
             result.push_str(&get_versions(None));
             result.push_str(&FOOTER);
-        },
+        }
         Ok(old_changelog) => {
             let mut old_changelog = old_changelog.to_string();
             let last_version_index = old_changelog.find("<a name=").unwrap();
