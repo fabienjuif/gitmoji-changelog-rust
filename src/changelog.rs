@@ -7,7 +7,7 @@ use crate::version::Version;
 
 #[derive(Debug, Serialize)]
 pub struct Changelog {
-    versions: Vec<Version>,
+    pub versions: Vec<Version>,
 }
 
 impl Changelog {
@@ -61,8 +61,27 @@ impl Changelog {
 
             previous_version_name = &version.name;
         });
+
         versions.reverse();
 
         Changelog { versions }
+    }
+
+    pub fn set_release_name(&mut self, release_name: &str) -> &mut Changelog {
+        if let Some(recent_version) = self.versions.first_mut() {
+            if recent_version.name == "HEAD" {
+                recent_version.set_name(release_name);
+            }
+        }
+
+        self
+    }
+
+    pub fn remove_head_version(&mut self) -> &mut Changelog {
+        if !self.versions.is_empty() {
+            self.versions.remove(0);
+        }
+
+        self
     }
 }

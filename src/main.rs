@@ -4,6 +4,8 @@ extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate clap;
 
 use std::fs::{self, File};
 use std::io::prelude::*;
@@ -41,7 +43,7 @@ const VERSIONS_TEMPLATE: &str = "{{#each changelog.versions as |version|}}
 
 fn main() {
     let matches = App::new("gitmoji-changelog")
-        .version("1.0.0")
+        .version(crate_version!())
         .author("Fabien JUIF <fabien.juif@gmail.com>")
         .arg(
             Arg::with_name("output")
@@ -60,9 +62,18 @@ fn main() {
         )
         .arg(
             Arg::with_name("path")
-                .help("path to the git repository to parse")
                 .value_name("GIT_REPOSITORY_PATH")
+                .help("Path to the git repository to parse")
                 .required(true),
+        )
+        .arg(
+            Arg::with_name("release")
+                .short("r")
+                .long("release")
+                .value_name("RELEASE_VERSION")
+                .help("Set a version to the release (latest tag to HEAD). If not set, the commits after the latest tag will not be printed to the changelog.")
+                .takes_value(true)
+                .required(false)
         )
         .get_matches();
 
@@ -70,7 +81,11 @@ fn main() {
     eprintln!("Git repository path: {}", repository);
 
     let get_versions = |from| {
-        let changelog = Changelog::from(&repository, from);
+        let mut changelog = Changelog::from(&repository, from);
+        match matches.value_of("release") {
+            None => changelog.remove_head_version(),
+            Some(release_name) => changelog.set_release_name(release_name),
+        };
 
         let mut reg = Handlebars::new();
         reg.set_strict_mode(true);

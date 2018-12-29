@@ -68,4 +68,10 @@ impl Version {
 
         self
     }
+
+    pub fn set_name(&mut self, name: &str) -> &mut Version {
+        self.name = name.to_string();
+
+        self
+    }
 }
