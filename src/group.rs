@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use crate::commit::Commit;
@@ -8,6 +9,7 @@ lazy_static! {
 
         groups.push(Group::new(
             "Added",
+            10,
             vec![
                 "sparkles",
                 "tada",
@@ -22,6 +24,7 @@ lazy_static! {
 
         groups.push(Group::new(
             "Changed",
+            20,
             vec![
                 "art",
                 "zap",
@@ -46,17 +49,19 @@ lazy_static! {
             ],
         ));
 
-        groups.push(Group::new("Breaking changes", vec!["boom"]));
+        groups.push(Group::new("Breaking changes", 30, vec!["boom"]));
 
-        groups.push(Group::new("Deprecated", vec![]));
+        groups.push(Group::new("Deprecated", 40, vec![]));
 
         groups.push(Group::new(
             "Removed",
+            50,
             vec!["fire", "heavy_minus_sign", "mute"],
         ));
 
         groups.push(Group::new(
             "Fixed",
+            60,
             vec![
                 "bug",
                 "ambulance",
@@ -70,18 +75,19 @@ lazy_static! {
             ],
         ));
 
-        groups.push(Group::new("Security", vec!["lock"]));
+        groups.push(Group::new("Security", 70, vec!["lock"]));
 
-        groups.push(Group::new("Useless", vec!["bookmark"]));
+        groups.push(Group::new("Miscellaneous", 80, vec![]));
 
-        groups.push(Group::new("Miscellaneous", vec![]));
+        groups.push(Group::new("Useless", 90, vec!["bookmark"]));
 
         groups
     };
 }
 
-#[derive(Debug, Serialize, Eq)]
+#[derive(Debug, Serialize, Eq, Clone)]
 pub struct Group {
+    pub order: usize,
     pub name: &'static str,
     pub codes: Vec<&'static str>, // TODO: remove this from here
     pub commits: Vec<Commit>,
@@ -93,9 +99,22 @@ impl PartialEq for Group {
     }
 }
 
+impl Ord for Group {
+    fn cmp(&self, other: &Group) -> Ordering {
+        self.order.cmp(&other.order)
+    }
+}
+
+impl PartialOrd for Group {
+    fn partial_cmp(&self, other: &Group) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 impl Group {
-    pub fn new(name: &'static str, codes: Vec<&'static str>) -> Group {
+    pub fn new(name: &'static str, order: usize, codes: Vec<&'static str>) -> Group {
         Group {
+            order,
             name,
             codes,
             commits: vec![],
@@ -103,23 +122,23 @@ impl Group {
     }
 
     pub fn from_commits(commits: Vec<Commit>) -> Vec<Group> {
-        let mut groups = HashMap::new();
+        let mut groups = HashMap::<&'static str, Group>::new();
 
         for commit in commits {
             // TODO: use a HashMap instead of doing this cardinal product
-            let group_name = match GROUPS
+            let group = match GROUPS
                 .iter()
                 .find(|group| group.codes.iter().any(|&code| code == commit.emoji_code))
             {
-                None => "Miscellaneous",
-                Some(group) => group.name,
+                None => Group::new("Miscellaneous", 80, vec![]),
+                Some(group) => group.clone(),
             };
 
             groups
-                .entry(group_name)
-                .or_insert(Group::new(group_name, vec![]));
+                .entry(group.name)
+                .or_insert(Group::new(group.name, group.order, vec![]));
             groups
-                .entry(group_name)
+                .entry(group.name)
                 .and_modify(|group| group.commits.push(commit));
         }
 
@@ -130,6 +149,8 @@ impl Group {
                 vector.push(group);
             }
         }
+
+        vector.sort();
 
         vector
     }

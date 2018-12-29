@@ -73,7 +73,7 @@ lazy_static! {
   };
 }
 
-#[derive(Debug, Eq, PartialEq, Serialize)]
+#[derive(Debug, Eq, PartialEq, Serialize, Clone)]
 pub struct Commit {
     pub summary: String, // TODO: try to convert this so str
     pub emoji_code: String,
