@@ -25,7 +25,7 @@ But if I (or you) want to push this further:
  - [x] Create a markdown
  - [ ] Create an incremental markdown
  - [ ] Detect which tags to start from
- - [ ] Add author
+ - [x] Add author
  - [ ] Group similar commits
 
 This is a lot of work and I this is surely not worh it!
