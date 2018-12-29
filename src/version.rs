@@ -86,7 +86,9 @@ impl Version {
             if version.name == "HEAD" && versions_len == 1 {
                 revwalk.push_head().unwrap();
             } else if previous_version_name == "" {
-                revwalk.push_ref(&format!("refs/tags/{}", version.name)).unwrap();
+                revwalk
+                    .push_ref(&format!("refs/tags/{}", version.name))
+                    .unwrap();
             } else {
                 revwalk
                     .push_range(&format!("{}..{}", previous_version_name, version.name))

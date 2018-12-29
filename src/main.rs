@@ -22,13 +22,12 @@ use crate::changelog::Changelog;
 
 const TEMPLATE: &str = r"
 # Changelog
-
-{{#each versions as |version|}}
+{{#each changelog.versions as |version|}}
 ## Version {{version.name}}
 {{#each version.groups as |group|}}
 ### {{group.name}}
 {{#each group.commits as |commit|~}}
- - {{commit.emoji}}  {{commit.summary}}
+ - {{commit.emoji}}  {{commit.summary}}{{#if @root.options.print-authors}} ({{commit.author}}){{/if}}
 {{/each~}}
 {{/each~}}
 {{/each~}}
@@ -47,6 +46,13 @@ fn main() {
                 .takes_value(true),
         )
         .arg(
+            Arg::with_name("print-authors")
+                .short("a")
+                .long("print-authors")
+                .help("Print author for each commit")
+                .takes_value(false),
+        )
+        .arg(
             Arg::with_name("path")
                 .help("path to the git repository to parse")
                 .value_name("GIT_REPOSITORY_PATH")
@@ -57,13 +63,17 @@ fn main() {
     eprintln!("Git repository path: {}", matches.value_of("path").unwrap());
 
     let repository = env::args().nth(1).unwrap();
+    let changelog = Changelog::open(&repository);
 
-    // let changelog = Changelog::from_range(&repository, "06a218d4bba6d3d7bf359bd9eff4013f585fc1fa..44b21e9d4b040ba4f36ce136c82a59659a68701b");
-    // let changelog = Changelog::from_range(&repository, "06a218d4bba6d3d7bf359bd9eff4013f585fc1fa..HEAD");
-    let changelog = Changelog::from_range(&repository, "v1.0.0..HEAD");
-
-    let reg = Handlebars::new();
-    let result = reg.render_template(TEMPLATE, &json!(changelog)).unwrap();
+    let mut reg = Handlebars::new();
+    reg.set_strict_mode(true);
+    let json = json!({
+        "changelog": changelog,
+        "options": {
+            "print-authors": matches.is_present("print-authors"),
+        },
+    });
+    let result = reg.render_template(TEMPLATE, &json).unwrap();
 
     match matches.value_of("output") {
         None => println!("{}", result),
