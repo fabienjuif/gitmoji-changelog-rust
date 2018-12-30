@@ -1,5 +1,6 @@
 FROM clux/muslrust as builder
 
+ENV RUSTFLAGS "-C opt-level=s"
 COPY . /volume/
 RUN cargo build --release
 
