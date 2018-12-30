@@ -3,8 +3,8 @@ package:
 
 tools:
 	@echo "Installing tools"
-	@rustup component add rustfmt &> /dev/null
-	@rustup component add clippy &> /dev/null
+	@rustup component add rustfmt
+	@rustup component add clippy
 	@echo "Tools: ok!"
 
 quality: tools
