@@ -5,7 +5,7 @@
 
 This is a Rust version of [gitmoji-changelog](https://github.com/frinyvonnick/gitmoji-changelog).
 
-<p style="text-align: center">
+<p style="text-align: center" align="center">
   <a href="https://circleci.com/gh/fabienjuif/gitmoji-changelog-rust/tree/master">
     <img src="https://img.shields.io/circleci/project/github/fabienjuif/gitmoji-changelog-rust/master.svg" />
   </a>
