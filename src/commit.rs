@@ -87,7 +87,7 @@ pub struct Commit {
 impl Commit {
     pub fn new(hash: String, summary: &str, author: &str, emoji_code: &str) -> Commit {
         Commit {
-            hash: hash,
+            hash,
             summary: summary.to_string(),
             author: author.to_string(),
             emoji_code: emoji_code.to_string(),
@@ -98,7 +98,7 @@ impl Commit {
     pub fn from_git2(commit: &git2::Commit) -> Option<Commit> {
         // author
         let author = commit.author();
-        let author = author.name().or(author.email()).unwrap_or("");
+        let author = author.name().or_else(|| author.email()).unwrap_or("");
 
         // hash (full, since git2r doesn't support shorthash yet )
         let hash = format!("{}", commit.id());

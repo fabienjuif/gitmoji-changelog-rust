@@ -9,14 +9,23 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          name: Restore Cargo cache
+          name: Restoring Cargo cache
           keys:
             - cargo-packages-{{ checksum "Cargo.lock" }}
       - run:
-          name: Build application
+          name: Installing tools
+          command: rustup component add rustfmt clippy
+      - run:
+          name: Checking code style (fmt)
+          command: cargo fmt --all -- --check
+      - run:
+          name: Checking code style (clippy)
+          command: cargo clippy --all-targets --all-features -- -D warnings
+      - run:
+          name: Building
           command: cargo build
       - save_cache:
-          name: Save Cargo cache
+          name: Saving Cargo cache
           key: cargo-packages-{{ checksum "Cargo.lock" }}
           paths:
             - ~/.cargo/registry/cache

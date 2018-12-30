@@ -26,7 +26,7 @@ impl Changelog {
                 let version = Version::new(name);
 
                 if let Some(from_version) = &from_version {
-                    if from_version >= &version {
+                    if *from_version >= version {
                         return None;
                     }
                 }

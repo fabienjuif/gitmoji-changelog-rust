@@ -136,7 +136,7 @@ impl Group {
 
             groups
                 .entry(group.name)
-                .or_insert(Group::new(group.name, group.order, vec![]));
+                .or_insert_with(|| Group::new(group.name, group.order, vec![]));
             groups
                 .entry(group.name)
                 .and_modify(|group| group.commits.push(commit));
