@@ -64,9 +64,8 @@ But if I (or you) want to push this further:
 This is a lot of work and I this is surely not worh it!
 
 ## Commands
-Create the Docker image with:
-```sh
-make
-```
+This project use a `Makefile`, here are the main targets:
+  - `package`: build the docker image
+  - `ci`: build the project (dev mode) and check clippy and rustfmt
 
-All other commands pass through Cargo.
+You can still use cargo if you want to, eg building the release version with: `cargo build --release`

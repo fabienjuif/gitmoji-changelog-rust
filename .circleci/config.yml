@@ -13,7 +13,7 @@ jobs:
           keys:
             - cargo-packages-{{ checksum "Cargo.lock" }}
       - run:
-          name: Checking quality
+          name: Running make ci
           command: make -j4 ci
       - save_cache:
           name: Saving Cargo cache
