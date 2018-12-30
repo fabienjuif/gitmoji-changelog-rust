@@ -123,7 +123,7 @@ fn main() {
             let last_version = last_version.get(1).map(|c| c.as_str());
 
             format_changelog(&old_changelog, last_version, &rest)
-        },
+        }
     };
 
     match matches.value_of("output") {
