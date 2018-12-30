@@ -1,10 +1,9 @@
 # gitmoji-changelog-rust
-[[documentation](https://docs.rs/crate/gitmoji-changelog)] [[repository](https://github.com/fabienjuif/gitmoji-changelog-rust)]
-
 > Do you use gitmoji? Then generate your changelog with this app!
 
 This is a Rust version of [gitmoji-changelog](https://github.com/frinyvonnick/gitmoji-changelog).
 
+<br />
 <p style="text-align: center" align="center">
   <a href="https://circleci.com/gh/fabienjuif/gitmoji-changelog-rust/tree/master">
     <img src="https://img.shields.io/circleci/project/github/fabienjuif/gitmoji-changelog-rust/master.svg" />
@@ -16,7 +15,11 @@ This is a Rust version of [gitmoji-changelog](https://github.com/frinyvonnick/gi
     <img src="https://img.shields.io/badge/docker--image-fabienjuif%2Fgitmoji--changelog-blue.svg" />
     <img src="https://img.shields.io/microbadger/image-size/fabienjuif%2Fgitmoji-changelog.svg" />
   </a>
+  <br />
+  [<a href="https://docs.rs/crate/gitmoji-changelog">documentation</a>]
+  [<a href="https://github.com/fabienjuif/gitmoji-changelog-rust">repository</a>]
 </p>
+<br />
 
 ## Why
 I was sad about the space it takes in a Docker container with the NodeJS version and I am learning Rust: so I was curious and it helps me have a little Rust CLI project to play with.
