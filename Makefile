@@ -2,14 +2,19 @@ package:
 	@docker build -t fabienjuif/gitmoji-changelog .
 
 tools:
+	@echo "Installing tools"
 	@rustup component add rustfmt clippy &> /dev/null
+	@echo "Tools: ok!"
 
 quality: tools
+	@echo "Running quality"
 	@cargo fmt --all -- --check
 	@cargo clippy --quiet --all-targets --all-features -- -D warnings
-	@echo "All is ok!"
+	@echo "Quality: ok!"
 
 build-dev: tools
-	@cargo build
+	@echo "Building"
+	@cargo build --quiet
+	@echo "Building: ok!"
 
 ci: quality build-dev
