@@ -1,0 +1,39 @@
+version: 2
+jobs:
+  quality:
+    docker:
+      - image: circleci/rust:latest
+        environment:
+          TERM: xterm
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Cargo cache
+          keys:
+            - cargo-packages-{{ checksum "Cargo.lock" }}
+      - run:
+          name: Build application
+          command: cargo build
+      - save_cache:
+          name: Save Cargo cache
+          key: cargo-packages-{{ checksum "Cargo.lock" }}
+          paths:
+            - ~/.cargo/registry/cache
+            - ~/repo/target
+
+  # make sure docker can build this image
+  # so there is no surprise when we merge to master (and deploy)
+  build-app:
+    machine: true
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: docker build -t fabienjuif/gitmoji-changelog .
+
+workflows:
+  version: 2
+  quality:
+    jobs:
+      - quality
+      - build-app
