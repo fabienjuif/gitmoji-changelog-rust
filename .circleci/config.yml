@@ -13,17 +13,8 @@ jobs:
           keys:
             - cargo-packages-{{ checksum "Cargo.lock" }}
       - run:
-          name: Installing tools
-          command: rustup component add rustfmt clippy
-      - run:
-          name: Checking code style (fmt)
-          command: cargo fmt --all -- --check
-      - run:
-          name: Checking code style (clippy)
-          command: cargo clippy --all-targets --all-features -- -D warnings
-      - run:
-          name: Building
-          command: cargo build
+          name: Running make ci
+          command: make -j4 ci
       - save_cache:
           name: Saving Cargo cache
           key: cargo-packages-{{ checksum "Cargo.lock" }}
