@@ -70,18 +70,25 @@ fn main() {
             Arg::with_name("release")
                 .short("r")
                 .long("release")
-                .value_name("RELEASE_VERSION")
                 .help("Set a version to the release (latest tag to HEAD). If not set, the commits after the latest tag will not be printed to the changelog.")
                 .takes_value(true)
                 .required(false)
+        )
+        .arg(
+            Arg::with_name("delta")
+                .long("delta")
+                .help("Print delta only (not the whole CHANGELOG).")
+                .required(false)
+
         )
         .get_matches();
 
     let repository = matches.value_of("path").unwrap();
     eprintln!("Git repository path: {}", repository);
 
-    let get_versions = |from| {
+    let format_changelog = |header, from, footer| {
         let mut changelog = Changelog::from(&repository, from);
+
         match matches.value_of("release") {
             None => changelog.remove_head_version(),
             Some(release_name) => changelog.set_release_name(release_name),
@@ -96,20 +103,17 @@ fn main() {
             },
         });
 
-        format!(
-            "\n{}\n",
-            reg.render_template(VERSIONS_TEMPLATE, &json).unwrap()
-        )
+        let delta = reg.render_template(VERSIONS_TEMPLATE, &json).unwrap();
+
+        if matches.is_present("delta") {
+            return delta;
+        }
+
+        format!("{}\n{}\n{}", header, delta, footer)
     };
 
-    let mut result = String::from("");
-
-    match fs::read_to_string(format!("{}/CHANGELOG.md", repository)) {
-        Err(_) => {
-            result.push_str(&HEADER);
-            result.push_str(&get_versions(None));
-            result.push_str(&FOOTER);
-        }
+    let result = match fs::read_to_string(format!("{}/CHANGELOG.md", repository)) {
+        Err(_) => format_changelog(HEADER, None, FOOTER),
         Ok(old_changelog) => {
             let mut old_changelog = old_changelog.to_string();
             let last_version_index = old_changelog.find("<a name=").unwrap();
@@ -118,11 +122,9 @@ fn main() {
             let last_version = REG_FROM.captures(&rest).unwrap();
             let last_version = last_version.get(1).map(|c| c.as_str());
 
-            result.push_str(&old_changelog.trim());
-            result.push_str(&get_versions(last_version));
-            result.push_str(&rest);
-        }
-    }
+            format_changelog(&old_changelog, last_version, &rest)
+        },
+    };
 
     match matches.value_of("output") {
         None => println!("{}", result),
