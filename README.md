@@ -5,18 +5,44 @@
 
 This is a Rust version of [gitmoji-changelog](https://github.com/frinyvonnick/gitmoji-changelog).
 
+<p style="text-align: center">
+  <a href="https://circleci.com/gh/fabienjuif/gitmoji-changelog-rust/tree/master">
+    <img src="https://img.shields.io/circleci/project/github/fabienjuif/gitmoji-changelog-rust/master.svg" />
+  </a>
+  <a href="https://crates.io/crates/gitmoji-changelog">
+    <img src="https://img.shields.io/crates/v/gitmoji-changelog.svg" />
+  </a>
+  <a href="https://hub.docker.com/r/fabienjuif/gitmoji-changelog">
+    <img src="https://img.shields.io/badge/docker--image-fabienjuif%2Fgitmoji--changelog-blue.svg" />
+    <img src="https://img.shields.io/microbadger/image-size/fabienjuif%2Fgitmoji-changelog.svg" />
+  </a>
+</p>
+
 ## Why
 I was sad about the space it takes in a Docker container with the NodeJS version and I am learning Rust: so I was curious and it helps me have a little Rust CLI project to play with.
 
 ## Try it
-With Docker 🐳!
+### With Docker 🐳!
 ```sh
+## try it
 docker run --rm -v ${PWD}:/repo fabienjuif/gitmoji-changelog
+
+## to see which options you can use:
+docker run --rm -v ${PWD}:/repo fabienjuif/gitmoji-changelog --help
 ```
 
-To see which options you can use:
+### With cargo
 ```sh
-docker run --rm -v ${PWD}:/repo fabienjuif/gitmoji-changelog --help
+## install it
+cargo install gitmoji-changelog
+
+# maybe you should reset your env here (relaunch your terminal or type `zsh` (or `bash`))
+
+## try it
+gitmoji-changelog .
+
+## to see which options you can use:
+gitmoji-changelog --help
 ```
 
 ## Roadmap
