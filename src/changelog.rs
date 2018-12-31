@@ -4,7 +4,7 @@ use git2::Repository;
 use handlebars::Handlebars;
 
 use crate::commit::Commit;
-use crate::version::Version;
+use crate::Version;
 
 const TEMPLATE: &str = "{{#each versions as |version|}}
 <a name=\"{{version.name}}\" data-comment=\"this line is used by gitmoji-changelog, don't remove it!\"></a>

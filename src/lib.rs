@@ -5,7 +5,12 @@ extern crate serde_json;
 #[macro_use]
 extern crate lazy_static;
 
-pub mod changelog;
-pub mod commit;
-pub mod group;
-pub mod version;
+mod changelog;
+mod commit;
+mod group;
+mod version;
+
+pub use crate::changelog::Changelog;
+pub use crate::commit::Commit;
+pub use crate::group::Group;
+pub use crate::version::Version;
