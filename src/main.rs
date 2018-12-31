@@ -41,7 +41,15 @@ fn main() {
         )
     };
 
-    let print = |changelog: &str| match matches.value_of("output") {
+    let format = |header, delta, footer| {
+        if matches.is_present("delta") {
+            return delta;
+        }
+
+        format!("{}\n{}\n{}", header, delta, footer)
+    };
+
+    let print = |changelog: String| match matches.value_of("output") {
         None => println!("{}", changelog),
         Some(path) => {
             let mut file = File::create(path).unwrap();
@@ -50,7 +58,7 @@ fn main() {
     };
 
     match fs::read_to_string(format!("{}/CHANGELOG.md", repository)) {
-        Err(_) => print(&get_delta(None)),
+        Err(_) => print(format(HEADER, get_delta(None), FOOTER)),
         Ok(old_changelog) => {
             let mut old_changelog = old_changelog.to_string();
             let last_version_index = old_changelog.find("<a name=").unwrap();
@@ -59,12 +67,7 @@ fn main() {
             let last_version = REG_FROM.captures(&rest).unwrap();
             let last_version = last_version.get(1).map(|c| c.as_str());
 
-            let delta = get_delta(last_version);
-            if matches.is_present("delta") {
-                print(&delta);
-            } else {
-                print(&format!("{}\n{}\n{}", old_changelog, delta, rest));
-            }
+            print(format(&old_changelog, get_delta(last_version), &rest));
         }
     };
 }
