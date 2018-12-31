@@ -48,7 +48,6 @@ impl Changelog {
             })
             .collect::<Vec<_>>();
 
-
         versions.sort();
 
         versions.push(Version::new("HEAD"));
@@ -87,9 +86,7 @@ impl Changelog {
             versions.push(last_version.clone());
         }
 
-        Changelog {
-            versions,
-        }
+        Changelog { versions }
     }
 
     pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> String {
