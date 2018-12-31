@@ -48,11 +48,9 @@ impl Changelog {
             })
             .collect::<Vec<_>>();
 
-        if versions.is_empty() {
-            versions.push(Version::new("HEAD"));
-        }
-
         versions.sort();
+
+        versions.push(Version::new("HEAD"));
 
         let mut revwalk = repository.revwalk().unwrap();
         let mut previous_version_name = from.unwrap_or("");
@@ -76,6 +74,17 @@ impl Changelog {
         });
 
         versions.reverse();
+
+        Changelog { versions }
+    }
+
+    #[allow(dead_code)]
+    pub fn keep_last_version_only(&self) -> Changelog {
+        let mut versions = vec![];
+
+        if let Some(last_version) = self.versions.first() {
+            versions.push(last_version.clone());
+        }
 
         Changelog { versions }
     }
