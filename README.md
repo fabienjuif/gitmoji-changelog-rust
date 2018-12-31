@@ -16,7 +16,7 @@ This is a Rust version of [gitmoji-changelog](https://github.com/frinyvonnick/gi
     <img src="https://img.shields.io/microbadger/image-size/fabienjuif%2Fgitmoji-changelog.svg" />
   </a>
   <br />
-  [<a href="https://docs.rs/crate/gitmoji-changelog">documentation</a>]
+  [<a href="https://docs.rs/gitmoji-changelog/">documentation</a>]
   [<a href="https://github.com/fabienjuif/gitmoji-changelog-rust">repository</a>]
 </p>
 <br />

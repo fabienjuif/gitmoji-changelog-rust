@@ -1,11 +1,11 @@
 [package]
 name = "gitmoji-changelog"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Fabien JUIF <fabien.juif@gmail.com>"]
 edition = "2018"
 license = "MIT"
 description = "Do you use gitmoji? Then generate your changelog with this app!"
-documentation = "https://docs.rs/crate/gitmoji-changelog"
+documentation = "https://docs.rs/gitmoji-changelog/"
 repository = "https://github.com/fabienjuif/gitmoji-changelog-rust"
 readme = "README.md"
 
