@@ -83,8 +83,6 @@ impl Changelog {
     pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> String {
         let mut versions = self.versions.clone();
 
-        println!("AUTHOR: {}", print_authors);
-
         match release {
             None => {
                 if !versions.is_empty() {
