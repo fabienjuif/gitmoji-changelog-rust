@@ -1,9 +1,22 @@
 use std::path::Path;
 
 use git2::Repository;
+use handlebars::Handlebars;
 
 use crate::commit::Commit;
 use crate::version::Version;
+
+const TEMPLATE: &str = "{{#each versions as |version|}}
+<a name=\"{{version.name}}\" data-comment=\"this line is used by gitmoji-changelog, don't remove it!\"></a>
+## Version {{version.name}}
+{{#each version.groups as |group|}}
+### {{group.name}}
+{{#each group.commits as |commit|~}}
+ - {{commit.emoji}}  {{commit.summary}}{{#if @root.options.print-authors}} ({{commit.author}}){{/if}}
+{{/each~}}
+{{/each~}}
+{{/each~}}
+";
 
 #[derive(Debug, Serialize)]
 pub struct Changelog {
@@ -67,21 +80,33 @@ impl Changelog {
         Changelog { versions }
     }
 
-    pub fn set_release_name(&mut self, release_name: &str) -> &mut Changelog {
-        if let Some(recent_version) = self.versions.first_mut() {
-            if recent_version.name == "HEAD" {
-                recent_version.set_name(release_name);
+    pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> String {
+        let mut versions = self.versions.clone();
+
+        match release {
+            None => {
+                if !versions.is_empty() {
+                    versions.remove(0);
+                }
             }
-        }
+            Some(release_name) => {
+                if let Some(recent_version) = versions.first_mut() {
+                    if recent_version.name == "HEAD" {
+                        recent_version.set_name(release_name);
+                    }
+                }
+            }
+        };
 
-        self
-    }
+        let mut reg = Handlebars::new();
+        reg.set_strict_mode(true);
+        let json = json!({
+            "versions": versions,
+            "options": {
+                "print-authors": print_authors,
+            },
+        });
 
-    pub fn remove_head_version(&mut self) -> &mut Changelog {
-        if !self.versions.is_empty() {
-            self.versions.remove(0);
-        }
-
-        self
+        reg.render_template(TEMPLATE, &json).unwrap()
     }
 }
