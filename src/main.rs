@@ -10,7 +10,6 @@ extern crate clap;
 use std::fs::{self, File};
 use std::io::prelude::*;
 
-use handlebars::Handlebars;
 use regex::Regex;
 
 mod changelog;
@@ -42,17 +41,15 @@ fn main() {
         )
     };
 
-    let print = |changelog: &str| {
-        match matches.value_of("output") {
-            None => println!("{}", changelog),
-            Some(path) => {
-                let mut file = File::create(path).unwrap();
-                file.write_all(changelog.as_bytes()).unwrap();
-            }
+    let print = |changelog: &str| match matches.value_of("output") {
+        None => println!("{}", changelog),
+        Some(path) => {
+            let mut file = File::create(path).unwrap();
+            file.write_all(changelog.as_bytes()).unwrap();
         }
     };
 
-    let result = match fs::read_to_string(format!("{}/CHANGELOG.md", repository)) {
+    match fs::read_to_string(format!("{}/CHANGELOG.md", repository)) {
         Err(_) => print(&get_delta(None)),
         Ok(old_changelog) => {
             let mut old_changelog = old_changelog.to_string();
@@ -68,6 +65,6 @@ fn main() {
             } else {
                 print(&format!("{}\n{}\n{}", old_changelog, delta, rest));
             }
-        },
+        }
     };
 }

@@ -2,7 +2,6 @@ use std::path::Path;
 
 use git2::Repository;
 use handlebars::Handlebars;
-use regex::Regex;
 
 use crate::commit::Commit;
 use crate::version::Version;
