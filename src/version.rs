@@ -11,7 +11,7 @@ lazy_static! {
     static ref RE_REMOVE_V: Regex = Regex::new(r"v?(.*)").unwrap();
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug, Clone)]
 pub struct Version {
     pub name: String,                    // TODO: &str?
     pub semver: Option<semver::Version>, // TODO: don't know if this is useful, except for sorting, I excluded it from JSON serialization
