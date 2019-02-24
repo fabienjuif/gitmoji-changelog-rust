@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::process;
 
 use git2::Repository;
 use handlebars::Handlebars;
@@ -94,6 +95,13 @@ impl Changelog {
 
         match release {
             None => {
+                if let Some(version) = versions.first() {
+                    if version.name == "HEAD" {
+                        eprintln!("Your repository does not seem to contain any tag. Please use the release option if you wish to generate a changelog either way.");
+                        process::exit(1);
+                    }
+                }
+
                 if !versions.is_empty() {
                     versions.remove(0);
                 }
