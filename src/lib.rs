@@ -9,8 +9,10 @@ mod changelog;
 mod commit;
 mod group;
 mod version;
+mod error;
 
 pub use crate::changelog::Changelog;
 pub use crate::commit::Commit;
 pub use crate::group::Group;
 pub use crate::version::Version;
+pub use crate::error::Error;

@@ -6,6 +6,7 @@ use handlebars::Handlebars;
 
 use crate::commit::Commit;
 use crate::version::Version;
+use crate::error::Error;
 
 const TEMPLATE: &str = "{{#each versions as |version|}}
 <a name=\"{{version.name}}\" data-comment=\"this line is used by gitmoji-changelog, don't remove it!\"></a>
@@ -94,14 +95,14 @@ impl Changelog {
         &self,
         release: Option<&str>,
         print_authors: bool,
-    ) -> Result<String, String> {
+    ) -> Result<String, Error> {
         let mut versions = self.versions.clone();
 
         match release {
             None => {
                 if let Some(version) = versions.first() {
                     if version.name == "HEAD" {
-                        return Err(String::from("Your repository does not seem to contain any tag. Please use the release option if you wish to generate a changelog either way."));
+                        return Err(Error::NoTag);
                     }
                 }
 

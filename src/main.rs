@@ -18,6 +18,7 @@ mod cli;
 mod commit;
 mod group;
 mod version;
+mod error;
 
 use crate::changelog::Changelog;
 
