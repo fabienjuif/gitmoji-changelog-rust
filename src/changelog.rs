@@ -1,5 +1,5 @@
+use std::result::Result;
 use std::path::Path;
-use std::process;
 
 use git2::Repository;
 use handlebars::Handlebars;
@@ -90,15 +90,14 @@ impl Changelog {
         Changelog { versions }
     }
 
-    pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> String {
+    pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> Result<String, String> {
         let mut versions = self.versions.clone();
 
         match release {
             None => {
                 if let Some(version) = versions.first() {
                     if version.name == "HEAD" {
-                        eprintln!("Your repository does not seem to contain any tag. Please use the release option if you wish to generate a changelog either way.");
-                        process::exit(1);
+                        return Err(String::from("Your repository does not seem to contain any tag. Please use the release option if you wish to generate a changelog either way."));
                     }
                 }
 
@@ -124,6 +123,6 @@ impl Changelog {
             },
         });
 
-        reg.render_template(TEMPLATE, &json).unwrap()
+        Ok(reg.render_template(TEMPLATE, &json).unwrap())
     }
 }

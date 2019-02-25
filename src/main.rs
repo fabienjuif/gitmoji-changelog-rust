@@ -9,6 +9,7 @@ extern crate clap;
 
 use std::fs::{self, File};
 use std::io::prelude::*;
+use std::process;
 
 use regex::Regex;
 
@@ -35,10 +36,16 @@ fn main() {
     let get_delta = |from| {
         let changelog = Changelog::from(repository, from);
 
-        changelog.to_markdown(
+        match changelog.to_markdown(
             matches.value_of("release"),
             matches.is_present("print-authors"),
-        )
+        ) {
+            Err(error) => {
+                eprintln!("{}", error);
+                process::exit(1);
+            },
+            Ok(value) => value
+        }
     };
 
     let format = |header, delta, footer| {
