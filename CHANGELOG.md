@@ -19,6 +19,8 @@
 
 <a name="0.2.0" data-comment="this line is used by gitmoji-changelog, don't remove it!"></a>
 ## Version 0.2.0
+
+### Added
 - ✨  incremental changelog generation
 - ✨  print-authors option
 - ✨  group by versions
