@@ -1,9 +1,11 @@
 use std::path::Path;
+use std::result::Result;
 
 use git2::Repository;
 use handlebars::Handlebars;
 
 use crate::commit::Commit;
+use crate::error::Error;
 use crate::version::Version;
 
 const TEMPLATE: &str = "{{#each versions as |version|}}
@@ -89,11 +91,17 @@ impl Changelog {
         Changelog { versions }
     }
 
-    pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> String {
+    pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> Result<String, Error> {
         let mut versions = self.versions.clone();
 
         match release {
             None => {
+                if let Some(version) = versions.first() {
+                    if version.name == "HEAD" {
+                        return Err(Error::NoTag);
+                    }
+                }
+
                 if !versions.is_empty() {
                     versions.remove(0);
                 }
@@ -116,6 +124,6 @@ impl Changelog {
             },
         });
 
-        reg.render_template(TEMPLATE, &json).unwrap()
+        Ok(reg.render_template(TEMPLATE, &json).unwrap())
     }
 }
