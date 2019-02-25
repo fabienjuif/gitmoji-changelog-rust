@@ -45,7 +45,7 @@ fn main() {
                 eprintln!("{}", error);
                 process::exit(1);
             }
-            Ok(value) => value,
+            Ok(delta) => delta,
         }
     };
 
