@@ -1,6 +1,6 @@
 [package]
 name = "gitmoji-changelog"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Fabien JUIF <fabien.juif@gmail.com>"]
 edition = "2018"
 license = "MIT"
