@@ -7,12 +7,12 @@ extern crate lazy_static;
 
 mod changelog;
 mod commit;
+mod error;
 mod group;
 mod version;
-mod error;
 
 pub use crate::changelog::Changelog;
 pub use crate::commit::Commit;
+pub use crate::error::Error;
 pub use crate::group::Group;
 pub use crate::version::Version;
-pub use crate::error::Error;

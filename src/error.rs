@@ -3,7 +3,7 @@ use std::fmt;
 
 #[derive(Debug, Clone)]
 pub enum Error {
-    NoTag
+    NoTag,
 }
 
 impl fmt::Display for Error {

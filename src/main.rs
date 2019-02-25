@@ -16,9 +16,9 @@ use regex::Regex;
 mod changelog;
 mod cli;
 mod commit;
+mod error;
 mod group;
 mod version;
-mod error;
 
 use crate::changelog::Changelog;
 
