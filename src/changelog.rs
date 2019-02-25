@@ -1,5 +1,5 @@
-use std::result::Result;
 use std::path::Path;
+use std::result::Result;
 
 use git2::Repository;
 use handlebars::Handlebars;
@@ -90,7 +90,11 @@ impl Changelog {
         Changelog { versions }
     }
 
-    pub fn to_markdown(&self, release: Option<&str>, print_authors: bool) -> Result<String, String> {
+    pub fn to_markdown(
+        &self,
+        release: Option<&str>,
+        print_authors: bool,
+    ) -> Result<String, String> {
         let mut versions = self.versions.clone();
 
         match release {

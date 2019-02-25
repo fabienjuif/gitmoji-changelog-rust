@@ -43,8 +43,8 @@ fn main() {
             Err(error) => {
                 eprintln!("{}", error);
                 process::exit(1);
-            },
-            Ok(value) => value
+            }
+            Ok(value) => value,
         }
     };
 
